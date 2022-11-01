@@ -73,7 +73,7 @@ public class VyTrackLoginDDTTest {
                 System.out.println("FAIL");
                 resultCell.setCellValue("FAIL");
             }
-
+            Thread.sleep(2000);
             dashboardPage.logout();
         }
 
