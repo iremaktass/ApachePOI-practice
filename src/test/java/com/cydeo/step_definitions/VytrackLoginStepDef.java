@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class VytrackLoginStepDef {
     @Then("the user should be able to log in and see their name")
     public void the_user_should_be_able_to_log_in_and_see_their_name() {
 
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 30);
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(dashboardPage.fullName));
 
         System.out.println("Full name = " + dashboardPage.fullName.getText());

@@ -8,59 +8,110 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class BrowserUtils {
 
+
     /*
-This method will accept int (in seconds) and execute Thread.sleep
-for given duration
- */
+    This method will accept int (in seconds)
+    and execute Thread.sleep method for given duration
+    Arg: int second
+     */
     public static void sleep(int second){
-        second *=1000;
-        try {
+        second *= 1000;
+        try{
             Thread.sleep(second);
-        }catch (InterruptedException e ) {
+        }catch (InterruptedException e){
 
         }
     }
 
-    /*
-    This method accepts 3 arguments.
-    Arg1: webdriver
-    Arg2: expectedInUrl : for verify if the url contains given String.
-        - If condition matches, will break loop.
-    Arg3: expectedInTitle to be compared against actualTitle
-     */
-    public static void switchWindowAndVerify(String expectedInUrl, String expectedInTitle){
+    public static void switchWindowAndVerify(String expectedInURL, String expectedInTitle){
 
-        Set<String> allWindowsHandles = Driver.getDriver().getWindowHandles();
+        //Return and store all window handles in a Set.
+        Set<String> allWindowHandles = Driver.getDriver().getWindowHandles();
 
-        for (String each : allWindowsHandles) {
+        for (String each : allWindowHandles) {
 
             Driver.getDriver().switchTo().window(each);
-
             System.out.println("Current URL: " + Driver.getDriver().getCurrentUrl());
 
-            if (Driver.getDriver().getCurrentUrl().contains(expectedInUrl)){
+            if (Driver.getDriver().getCurrentUrl().contains(expectedInURL )){
                 break;
             }
         }
 
-        //5. Assert:Title contains “expectedInTitle”
+        //5. Assert:Title contains “Etsy”
         String actualTitle = Driver.getDriver().getTitle();
         Assert.assertTrue(actualTitle.contains(expectedInTitle));
     }
 
-    /*
-    This method accepts a String "expectedTitle" and Asserts if it is true
-     */
     public static void verifyTitle(String expectedTitle){
-
         Assert.assertEquals(Driver.getDriver().getTitle(), expectedTitle);
+    }
+    public static void verifyTitleContains( String expectedInTitle){
+        Assert.assertTrue(Driver.getDriver().getTitle().contains(expectedInTitle));
+    }
 
+    /*
+    This method accepts WebElement target,
+    and waits for that WebElement not to be displayed on the page
+     */
+    public static void waitForInvisibilityOf(WebElement target){
+        //Create the object of 'WebDriverWait' class, and set up the constructor args
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+
+        //use the 'wait' object with the proper syntax to create explicit wait conditions.
+        wait.until(ExpectedConditions.invisibilityOf(target));
+    }
+
+    /*
+    This method accepts String title,
+    and waits for that Title to contain given String value.
+     */
+    public static void waitForTitleContains(String title){
+        //Create the object of 'WebDriverWait' class, and set up the constructor args
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+
+        //use the 'wait' object with the proper syntax to create explicit wait conditions.
+        wait.until(ExpectedConditions.titleContains(title));
+    }
+
+    /**
+     * This method accepts a dropdown element and returns a List<String> that contains all options values as String.
+     * @param dropdownElement
+     * @return actualMonth_as_STRING
+     */
+    public static List<String> dropdownOptions_as_STRING(WebElement dropdownElement){
+
+        Select month = new Select(dropdownElement);
+        //Storing all the ACTUAL options into a List of WebElements
+        List<WebElement> actualMonth_as_WEBELEMENT = month.getOptions();
+
+        //Creating an EMPTY list of String to store ACTUAL <option> as String
+        List<String> actualMonth_as_STRING = new ArrayList<>();
+
+        //Looping through the List<WebElement>, getting all options' texts, and storing them into List<String>
+        for (WebElement each : actualMonth_as_WEBELEMENT) {
+
+            actualMonth_as_STRING.add(each.getText());
+
+        }
+
+        return actualMonth_as_STRING;
+
+    }
+
+    public static void clickRadioButton(List<WebElement> radioButtons, String attributeValue){
+        for (WebElement each : radioButtons) {
+            if(each.getAttribute("value").equalsIgnoreCase(attributeValue)){
+                each.click();
+            }
+        }
     }
 
     /**
@@ -69,47 +120,6 @@ for given duration
      */
     public static void verifyURLContains(String expectedInURL){
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains(expectedInURL));
-    }
-
-
-    /**
-     * This method will accept a dropdown as a WebElement
-     * and return all the options' text in a List of String.
-     * @param dropdownElement
-     * @return List<String> actualOptionsAsString
-     */
-    public static List<String> dropdownOptionsAsString(WebElement dropdownElement){
-        Select select = new Select(dropdownElement);
-
-        //List of all ACTUAL month <options> as a web element
-        List<WebElement> actualOptionsAsWebElement = select.getOptions();
-
-        //List of all ACTUAL month <options> as a string
-        List<String> actualOptionsAsString= new ArrayList<>();
-
-        for (WebElement each : actualOptionsAsWebElement) {
-            actualOptionsAsString.add(each.getText());
-        }
-
-        return  actualOptionsAsString;
-
-    }
-
-
-    /**
-     * This method will accept a group radio buttons as a List of WebElement.
-     * It will loop through the List, and click to the radio button with provided attributeValue
-     * @param radioButtons
-     * @param attributeValue
-     */
-    public static void clickRadioButton(List<WebElement> radioButtons, String attributeValue){
-
-        for (WebElement each : radioButtons) {
-
-            if (each.getAttribute("value").equalsIgnoreCase(attributeValue)){
-                each.click();
-            }
-        }
     }
 
     /**
@@ -185,11 +195,11 @@ for given duration
      * Waits for the provided element to be visible on the page
      *
      * @param element
-     * @param timeToWaitInSec
+     * @param time
      * @return
      */
-    public static WebElement waitForVisibility(WebElement element, int timeToWaitInSec) {
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeToWaitInSec);
+    public static WebElement waitForVisibility(WebElement element, int time) {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
@@ -197,11 +207,11 @@ for given duration
      * Waits for element matching the locator to be visible on the page
      *
      * @param locator
-     * @param timeout
+     * @param time
      * @return
      */
-    public static WebElement waitForVisibility(By locator, int timeout) {
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
+    public static WebElement waitForVisibility(By locator, int time) {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
@@ -209,11 +219,11 @@ for given duration
      * Waits for provided element to be clickable
      *
      * @param element
-     * @param timeout
+     * @param time
      * @return
      */
-    public static WebElement waitForClickablility(WebElement element, int timeout) {
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
+    public static WebElement waitForClickablility(WebElement element, int time) {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
@@ -221,27 +231,27 @@ for given duration
      * Waits for element matching the locator to be clickable
      *
      * @param locator
-     * @param timeout
+     * @param time
      * @return
      */
-    public static WebElement waitForClickablility(By locator, int timeout) {
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
+    public static WebElement waitForClickablility(By locator, int time) {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
     /**
      * waits for backgrounds processes on the browser to complete
      *
-     * @param timeOutInSeconds
+     * @param time
      */
-    public static void waitForPageToLoad(long timeOutInSeconds) {
+    public static void waitForPageToLoad(long time) {
         ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver driver) {
                 return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
             }
         };
         try {
-            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeOutInSeconds);
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time));
             wait.until(expectation);
         } catch (Throwable error) {
             error.printStackTrace();
@@ -471,7 +481,7 @@ for given duration
      * @param time
      */
     public static void waitForPresenceOfElement(By by, long time) {
-        new WebDriverWait(Driver.getDriver(), time).until(ExpectedConditions.presenceOfElementLocated(by));
+        new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(time)).until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
 
