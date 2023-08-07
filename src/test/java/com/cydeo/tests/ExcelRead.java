@@ -1,5 +1,6 @@
 package com.cydeo.tests;
 
+import com.cydeo.utilities.ExcelUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.io.IOException;
 
 public class ExcelRead {
     /*
-    in this method we learn how to read from excel file step by step
+    in this method we learn how to read from Excel file step by step
      */
 
     @Test
@@ -18,6 +19,7 @@ public class ExcelRead {
 
         // to read from excel we need to load it to FileInputStream
         FileInputStream fileInputStream = new FileInputStream(path);
+
         //workbook>sheet>row>cell
 
         // <1> Create a workbook
@@ -25,6 +27,7 @@ public class ExcelRead {
 
         // <2> We need to get specific sheet from currently opened workbook
         XSSFSheet sheet = workbook.getSheet("Employees");
+
 
         //<3> Select row and cell
         //Print out Mary's cell
@@ -38,7 +41,7 @@ public class ExcelRead {
         System.out.println("sheet.getRow(4).getCell(0) = " + sheet.getRow(4).getCell(0));
 
         // Return the count of used cells only
-        //Strats counting from 1
+        //Starts counting from 1
         int usedRows = sheet.getPhysicalNumberOfRows();
         System.out.println("Used rows "+usedRows);
 
@@ -68,6 +71,9 @@ public class ExcelRead {
             }
         }
 
+
+//        ExcelUtil excelUtil = new ExcelUtil(path,"Employees");
+//        System.out.println("excelUtil.getCellData(1,0) = " + excelUtil.getCellData(1, 0));
 
     }
 

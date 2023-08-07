@@ -1,5 +1,6 @@
 package com.cydeo.tests;
 
+import com.cydeo.utilities.ExcelUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -57,6 +58,9 @@ public class ExcelWrite {
         outputStream.close();
         workbook.close();
         fileInputStream.close();
+
+        // ExcelUtil excelUtil = new ExcelUtil(filePath,"Employees");
+        //        excelUtil.setCellData("Smith",4,1);
 
     }
 }
