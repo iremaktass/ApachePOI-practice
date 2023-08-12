@@ -4,7 +4,7 @@ Feature: Users should be able to login
   Accounts are: driver, sales manager, store manager
 
   @wip
-  Scenario Outline: Login with
+  Scenario Outline: Login with different users
     Given user is on the login page
     When the user login with given credentials from "<SheetName>" and <RowNumber>
     Then the user should be able to log in and see their name

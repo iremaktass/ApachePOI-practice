@@ -1,0 +1,168 @@
+YOU MUST HAVE EXCEL
+
+TOPICS
+
+1- Excel hierarchy
+2- What is APACHE POI (dependency)
+3- Implement the the APACHE POI dependency
+4- How to read an Excel file
+5- How to write to an Excel file
+6- We will implement Selenium with APACHE POI
+7- Do Data Driven Testing
+
+
+===========================================================
+
+MICROSOFT OFFICE files:
+   - Excel
+   - Word
+   - Powerpoint
+   - outlook
+   - access
+
+We can automate actions that we do in MS Office program files using Java.
+We can use Apache POI library for MS office files automation.
+
+How to use it:
+   #1 - look up Apache POI dependency in mvnrepository
+   #2 - add the dependency to pom xml
+   <dependency>
+       <groupId>org.apache.poi</groupId>
+       <artifactId>poi-ooxml</artifactId>
+       <version>5.1.0</version>
+   </dependency>
+
+
+It is a library provided by Apache Foundation. We use many apache libraries in projects.
+
+It can automate MS office files.
+
+Today we will go over basics of reading and writing with MS Excel.
+
+=====================================================================
+
+Excel Extensions:
+   xls -> old one
+   xlsx -> newer one
+
+First lets open new MS Excel document and save in out project:
+
+1. Create new Excel workbook: Open Excel --> File -> New From template -> Blank
+  workbook
+2. Save file as: "SampleData" on your desktop -> File -> Save as -> Desktop
+3. Right click sheet name and change it to "Employees"
+3. Find "SampleData" excel file in your Desktop
+4. Click and hold --> Drag and drop into the project folder from IntelliJ
+5. Select "Refactor”
+
+======================================================================
+
+Excel hierarchy:
+   Workbook > Worksheet > Row > Cell
+
+How to read using Apache POI:
+   XSSFWorkbook > XSSFSheet > XSSFRow > XSSFCell
+
+XSSF -> Xml spreadsheet format.
+It is used for working with xlsx files.
+If your file is old version like xls,
+then we need to use HSSFWorkbook etc
+
+XSSFWorkbook -> xlsx
+HSSFWorkbook -> xls
+
+HSSF -> Horrible Spreadsheet format
+
+============================
+
+HOW TO READ EXCEL FILE?
+
+String path = "SampleData.xlsx";
+
+        // to read from excel we need to load it to FileInputStream
+        FileInputStream fileInputStream = new FileInputStream(path);
+
+        //workbook>sheet>row>cell
+
+        // <1> Create a workbook
+        XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+
+        // <2> We need to get specific sheet from currently opened workbook
+        XSSFSheet sheet = workbook.getSheet("Employees");
+
+Goto Row 1 and Cell 1:
+   System.out.println(worksheet.getRow(1).getCell(1));
+
+   emailElem.sendKeys(worksheet.getRow(1).getCell(1));
+
+
+==========================================
+
+
+Count number of rows:
+
+#1 - getPhysicalNumberOfRows() method
+//find out number of rows in the worksheet
+
+int rowsCount = dataSheet.getPhysicalNumberOfRows();
+System.out.println("rowsCount = " + rowsCount);
+
+-this method starts counting from 1. and not 0.
+-if there are empty rows in between, it will not count them.
+- it ignores empty rows
+EX:
+   row with data
+   row with data
+   Row with empty
+   row with data
+Result will be 3. because we have empty row
+
+
+#2 - getLastRowNum() method:
+
+int usedRowsCount = dataSheet.getLastRowNum();
+System.out.println("usedRowsCount = " + usedRowsCount);
+
+- it starts counting from 0
+- it counts empty rows as well
+- good fit to use with for loop, especially if there are empty rows
+
+   row with data
+   Row with empty
+   Row with empty
+   row with data
+It will return 3. since it starts counting from 0.
+
+
+=============================================================================
+
+
+HOW TO WRITE INTO EXCEL FILE?
+
+#1 Open the workbook using FileInputputStream
+
+FileInputputStream fis = new FileInputputStream("Employees.xlsx");
+XSSFWorkbook workbook = new XSSFWorkbook(fis);
+
+#2 Goto the worksheet
+ XSSFSheet sheet = workbook.getSheetAt(0);
+
+#3 if the cell was empty, we need to first create it.
+   XSSFCell cell = sheet.getRow(0).createCell(3);
+
+#4 Type the value using setCellValue method:
+   cell.setCellValue("Salary");
+
+#5 To save changes, we need to open file using outPutStream:
+
+FileOutputStream outputStream = new FileOutputStream(filePath);
+//save/write changes to the workbook
+ workbook.write(outputStream);
+
+#6 close streams and workbook. good to do.
+
+outputStream.close();
+workbook.close();
+in.close();
+
+===========================================================================

@@ -37,7 +37,7 @@ public class ExcelRead {
         //print Developer
         System.out.println("sheet.getRow(3).getCell(2) = " + sheet.getRow(3).getCell(2));
 
-        //print Lee
+        //print Linda
         System.out.println("sheet.getRow(4).getCell(0) = " + sheet.getRow(4).getCell(0));
 
         // Return the count of used cells only
